@@ -1,0 +1,6 @@
+{
+  "name": "CORPOCENTROH Siguatepeque — Radio en Vivo",
+  "description": "Emisoras en vivo de CORPOCENTROH en Siguatepeque, Honduras: La Centro 96.3 FM, Radio Pinares 91.5 FM, Sensa Stereo 99.1 FM y Sentimientos 95.7 FM, con chat en tiempo real para oyentes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
