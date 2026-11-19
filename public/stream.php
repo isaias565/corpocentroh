@@ -5,7 +5,7 @@
 declare(strict_types=1);
 
 $streams = [
-    'lacentro'     => 'http://198.204.234.10:6175/lacentro',
+    'lacentro'     => 'http://198.204.234.10:6175/live',
     'pinares'      => 'http://198.204.234.10:6184/live',
     'sensa'        => 'http://198.204.234.10:6185/live',
     'sentimientos' => 'http://198.204.234.10:6186/live',

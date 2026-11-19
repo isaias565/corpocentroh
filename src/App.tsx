@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { LivePlayerDeck } from './components/LivePlayerDeck';
 import { AdSpotlightCard } from './components/AdSpotlightCard';
 import { StationsAndSchedule } from './components/StationsAndSchedule';
+import { InformativoBanner } from './components/InformativoBanner';
 import { TvChannelsSection } from './components/TvChannelsSection';
 import { SiguatepequeHeritage } from './components/SiguatepequeHeritage';
 import { MobileBottomNav } from './components/MobileBottomNav';
@@ -36,6 +37,8 @@ export default function App() {
             <AdSpotlightCard />
           </div>
         </div>
+
+        <InformativoBanner />
 
         <TvChannelsSection onTvStartPlaying={() => {}} />
 

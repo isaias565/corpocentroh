@@ -73,21 +73,25 @@ export function LivePlayerDeck({
       {!heroImgFailed && (
         <img
           src={HERO_PINE_IMAGE}
-          alt="Amanecer sobre los pinares de Siguatepeque, Honduras"
+          alt="Pinares de Siguatepeque, Honduras"
           referrerPolicy="no-referrer"
           onError={() => setHeroImgFailed(true)}
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-40 pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-90 pointer-events-none select-none"
         />
       )}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-br from-[#0B2015]/95 via-[#0F2B1D]/88 to-[#173A28]/80 pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-b from-[#07160E]/72 via-[#0A2014]/52 to-[#081910]/94 pointer-events-none"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-r from-[#07160E]/75 via-[#0A2014]/35 to-transparent pointer-events-none"
       />
 
       <div className="relative z-10 p-5 sm:p-7 lg:p-8 flex flex-col gap-6 min-w-0 flex-1 justify-between">
-        {/* Editorial Kicker & Headline */}
-        <div className="space-y-2.5 min-w-0">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-[#D9E5DC]">
+        {/* Editorial Kicker & Headline over Siguatepeque Pines */}
+        <div className="space-y-2.5 min-w-0 drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-[#EBF3ED]">
             <span>Siguatepeque, Comayagua</span>
             <span aria-hidden="true">·</span>
             <span>La Ciudad de los Pinares</span>
@@ -100,16 +104,20 @@ export function LivePlayerDeck({
           </div>
 
           <h1
-            className="font-display font-bold tracking-tight text-white leading-[1.12] max-w-2xl"
+            className="font-display font-bold tracking-tight text-white leading-[1.12] max-w-2xl flex items-center gap-2.5 flex-wrap"
             style={{
               fontSize: 'clamp(1.75rem, 3.3vw, 2.75rem)',
               textWrap: 'balance',
             }}
           >
-            La voz e imagen de la zona central, en tu celular y en todo el mundo.
+            <span>La voz e imagen de la zona central.</span>
+            <Radio
+              className="w-6 h-6 sm:w-7 sm:h-7 text-amber-400 shrink-0 inline-block"
+              aria-hidden="true"
+            />
           </h1>
 
-          <p className="text-sm sm:text-[15px] text-[#DCE7DF] leading-relaxed max-w-xl">
+          <p className="text-sm sm:text-[15px] text-[#F1F6F2] leading-relaxed max-w-xl">
             Elige cualquiera de las cuatro emisoras de CORPOCENTROH para abrir la señal de audio en vivo directamente en tu navegador o teléfono.
           </p>
         </div>

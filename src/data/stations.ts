@@ -51,6 +51,7 @@ export interface TvChannel {
 
 export const HERO_PINE_IMAGE = '/src/assets/images/siguatepeque_pine_sunrise_1795022912873.jpg';
 export const PUBLICIDAD_IMAGE = '/src/assets/images/publicidad_clinica_damaris.png';
+export const INFORMATIVO_IMAGE = '/src/assets/images/fon.jpg';
 
 export const TV_CHANNELS: TvChannel[] = [
   {
@@ -88,7 +89,7 @@ export const STATIONS: RadioStation[] = [
     surfaceTint: '#EAF2EE',
     coverImage: '/src/assets/images/station_lacentro.png',
     streamProxyUrl: '/api/stream/lacentro',
-    directStreamUrl: 'http://198.204.234.10:6175/lacentro',
+    directStreamUrl: 'http://198.204.234.10:6175/live',
     whatsappCabin: CORPOCENTROH_WHATSAPP_DISPLAY,
     schedule: [
       {
