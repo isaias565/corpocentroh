@@ -15,7 +15,7 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 
 const STREAM_TARGETS: Record<string, { url: string; label: string }> = {
   lacentro: {
-    url: 'http://198.204.234.10:6175/live',
+    url: 'http://198.204.234.10:6175/lacentro',
     label: 'La Centro 96.3 FM',
   },
   pinares: {

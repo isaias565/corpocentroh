@@ -88,7 +88,7 @@ export const STATIONS: RadioStation[] = [
     surfaceTint: '#EAF2EE',
     coverImage: '/src/assets/images/station_lacentro.png',
     streamProxyUrl: '/api/stream/lacentro',
-    directStreamUrl: 'http://198.204.234.10:6175/live',
+    directStreamUrl: 'http://198.204.234.10:6175/lacentro',
     whatsappCabin: CORPOCENTROH_WHATSAPP_DISPLAY,
     schedule: [
       {
