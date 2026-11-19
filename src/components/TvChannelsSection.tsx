@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
-import { Tv, Play, RefreshCw, Volume2 } from 'lucide-react';
+import { Tv, Play, RefreshCw, Volume2, VolumeX } from 'lucide-react';
 import { TV_CHANNELS, type TvChannelId } from '../data/stations';
 
 interface TvChannelsSectionProps {
@@ -10,6 +10,7 @@ interface TvChannelsSectionProps {
 export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) {
   const [selectedChannelId, setSelectedChannelId] = useState<TvChannelId>('tvcentrohd');
   const [isTvActive, setIsTvActive] = useState(false);
+  const [isTvMuted, setIsTvMuted] = useState(false);
   const [tvError, setTvError] = useState<string | null>(null);
   const [failedLogos, setFailedLogos] = useState<Record<string, boolean>>({});
 
@@ -19,9 +20,9 @@ export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) 
   const selectedChannel =
     TV_CHANNELS.find((c) => c.id === selectedChannelId) ?? TV_CHANNELS[0];
 
-  useEffect(() => {
+  function loadAndPlayChannel(src: string) {
     const video = videoRef.current;
-    if (!video || !isTvActive) return;
+    if (!video) return;
 
     setTvError(null);
 
@@ -30,25 +31,44 @@ export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) 
       hlsRef.current = null;
     }
 
-    const src = selectedChannel.hlsUrl;
+    const attemptPlay = () => {
+      video.muted = false;
+      setIsTvMuted(false);
+      const p = video.play();
+      if (p && typeof p.catch === 'function') {
+        p.catch(() => {
+          // If browser autoplay policy blocks unmuted playback, start muted so video renders immediately
+          video.muted = true;
+          setIsTvMuted(true);
+          void video.play().catch(() => {
+            // Native video controls remain available for manual tap
+          });
+        });
+      }
+    };
 
     if (Hls.isSupported()) {
       const hls = new Hls({
         enableWorker: true,
-        lowLatencyMode: true,
+        lowLatencyMode: false,
+        backBufferLength: 30,
+        maxBufferLength: 30,
       });
       hlsRef.current = hls;
       hls.loadSource(src);
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        void video.play().catch(() => {
-          // User can tap native play control on mobile
-        });
+        attemptPlay();
       });
 
       hls.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.fatal) {
+        if (!data.fatal) return;
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+          hls.startLoad();
+        } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+          hls.recoverMediaError();
+        } else {
           setTvError(
             'La señal de video tuvo una interrupción o está fuera de línea en este momento.'
           );
@@ -56,26 +76,36 @@ export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) 
       });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src;
-      void video.play().catch(() => {
-        // User can tap native play control on Safari/iOS
-      });
+      video.load();
+      attemptPlay();
     } else {
       setTvError('Tu navegador no soporta reproducción de video HLS en directo.');
     }
+  }
 
+  useEffect(() => {
     return () => {
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
       }
     };
-  }, [selectedChannel.hlsUrl, isTvActive]);
+  }, []);
 
   function handleActivateChannel(channelId: TvChannelId) {
+    const channel = TV_CHANNELS.find((c) => c.id === channelId) ?? TV_CHANNELS[0];
     setSelectedChannelId(channelId);
     setTvError(null);
     setIsTvActive(true);
     onTvStartPlaying();
+    loadAndPlayChannel(channel.hlsUrl);
+  }
+
+  function handleUnmuteTv() {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
+    setIsTvMuted(false);
   }
 
   return (
@@ -98,19 +128,38 @@ export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) 
         {/* Video Player Viewport */}
         <div className="lg:col-span-8 rounded-2xl overflow-hidden bg-[#0B1E14] border border-[#1E3B2B] flex flex-col min-w-0">
           <div className="relative aspect-video w-full bg-[#07140D] flex items-center justify-center">
-            {isTvActive ? (
-              <video
-                ref={videoRef}
-                controls
-                playsInline
-                poster={selectedChannel.logoImage}
-                onPlay={onTvStartPlaying}
-                onError={() =>
-                  setTvError('No se pudo cargar la transmisión de video en este momento.')
+            {/* Keep video element permanently mounted so user click gestures attach reliably on iOS/Android */}
+            <video
+              ref={videoRef}
+              controls
+              playsInline
+              poster={selectedChannel.logoImage}
+              onPlay={onTvStartPlaying}
+              onVolumeChange={() => {
+                if (videoRef.current) {
+                  setIsTvMuted(videoRef.current.muted);
                 }
-                className="w-full h-full object-contain bg-black"
-              />
-            ) : (
+              }}
+              onError={() => {
+                if (isTvActive) {
+                  setTvError('No se pudo cargar la transmisión de video en este momento.');
+                }
+              }}
+              className={`w-full h-full object-contain bg-black ${isTvActive ? 'block' : 'hidden'}`}
+            />
+
+            {isTvActive && isTvMuted && (
+              <button
+                type="button"
+                onClick={handleUnmuteTv}
+                className="absolute top-3 right-3 z-10 min-h-[40px] px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-[#0F2B1D] text-xs font-semibold inline-flex items-center gap-1.5 shadow-md cursor-pointer"
+              >
+                <VolumeX className="w-4 h-4 shrink-0" aria-hidden="true" />
+                <span>Activar sonido</span>
+              </button>
+            )}
+
+            {!isTvActive && (
               <div className="absolute inset-0 p-6 flex flex-col items-center justify-center text-center gap-4 bg-gradient-to-br from-[#0B1F15] to-[#133323]">
                 {!failedLogos[selectedChannel.id] ? (
                   <img
@@ -163,11 +212,7 @@ export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) 
             {tvError ? (
               <button
                 type="button"
-                onClick={() => {
-                  setTvError(null);
-                  setIsTvActive(false);
-                  window.setTimeout(() => setIsTvActive(true), 60);
-                }}
+                onClick={() => handleActivateChannel(selectedChannel.id)}
                 className="min-h-[34px] px-3 py-1 rounded-lg bg-white/12 hover:bg-white/20 text-white font-medium inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
@@ -214,7 +259,7 @@ export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) 
                         onError={() =>
                           setFailedLogos((prev) => ({ ...prev, [channel.id]: true }))
                         }
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     ) : (
                       <Tv className="w-7 h-7 text-amber-300" aria-hidden="true" />

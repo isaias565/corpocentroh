@@ -92,10 +92,15 @@ async function startServer() {
           'Content-Type': contentType,
           'Cache-Control': 'no-store, no-cache, must-revalidate, private',
           Pragma: 'no-cache',
+          'X-Accel-Buffering': 'no',
+          'Content-Encoding': 'none',
           'Access-Control-Allow-Origin': '*',
           'Accept-Ranges': 'none',
           'X-Content-Type-Options': 'nosniff',
         });
+        if (typeof res.flushHeaders === 'function') {
+          res.flushHeaders();
+        }
 
         upstreamRes.pipe(res);
 
