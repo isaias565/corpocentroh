@@ -206,7 +206,7 @@ export function LivePlayerDeck({
             {/* Secondary Utility Bar */}
             <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
               <span className="text-xs text-[#C8DACD]">
-                La señal se abre en una nueva pestaña para reproducción directa sin bloqueos.
+                CORPOCENTROH llevando noticias, entretenimiento y buena música sin parar.
               </span>
 
               <div className="flex items-center gap-2">

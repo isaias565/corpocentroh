@@ -137,18 +137,57 @@ export function SiguatepequeHeritage() {
             </a>
           </div>
 
-          <div className="rounded-xl bg-white border border-[#DCE4DD] p-4 grid grid-cols-2 gap-4">
-            <div>
-              <div className="font-display text-2xl font-bold font-mono tabular-nums text-[#0F2B1D]">
-                1965
+          <div className="rounded-xl bg-white border border-[#DCE4DD] p-4 space-y-3.5">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="font-display text-2xl font-bold font-mono tabular-nums text-[#0F2B1D]">
+                  1965
+                </div>
+                <div className="text-xs text-[#4A5E52]">Año de fundación en Siguatepeque</div>
               </div>
-              <div className="text-xs text-[#4A5E52]">Año de fundación en Siguatepeque</div>
+              <div>
+                <div className="font-display text-2xl font-bold font-mono tabular-nums text-[#0F2B1D]">
+                  4 + 2
+                </div>
+                <div className="text-xs text-[#4A5E52]">Emisoras FM/AM y canales de TV</div>
+              </div>
             </div>
-            <div>
-              <div className="font-display text-2xl font-bold font-mono tabular-nums text-[#0F2B1D]">
-                4 + 2
-              </div>
-              <div className="text-xs text-[#4A5E52]">Emisoras FM/AM y canales de TV</div>
+
+            <div className="pt-3 border-t border-[#EAEFEA] flex flex-wrap items-center gap-2">
+              {STATIONS.map((s) => (
+                <a
+                  key={s.id}
+                  href={s.directStreamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`${s.name} (${s.frequency})`}
+                  aria-label={`Escuchar ${s.name}`}
+                  className="w-10 h-10 rounded-lg bg-[#F5F7F5] border border-[#DCE4DD] p-1 flex items-center justify-center hover:border-[#1B4D3E] transition-colors shrink-0"
+                >
+                  <img
+                    src={s.coverImage}
+                    alt={s.shortName}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain"
+                  />
+                </a>
+              ))}
+              {TV_CHANNELS.map((tv) => (
+                <a
+                  key={tv.id}
+                  href="#tv-en-vivo"
+                  title={`${tv.name} (${tv.channelNumber})`}
+                  aria-label={`Ver ${tv.name}`}
+                  className="w-10 h-10 rounded-lg bg-[#0F2B1D] border border-[#DCE4DD] p-1 flex items-center justify-center hover:border-amber-500 transition-colors shrink-0"
+                >
+                  <img
+                    src={tv.logoImage}
+                    alt={tv.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain"
+                  />
+                </a>
+              ))}
             </div>
           </div>
         </div>
