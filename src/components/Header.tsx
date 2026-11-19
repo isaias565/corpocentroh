@@ -1,15 +1,12 @@
 import { useState } from 'react';
-import { Play, Pause, Loader2 } from 'lucide-react';
+import { Play, ExternalLink } from 'lucide-react';
 import { CORPOCENTROH_LOGO, type RadioStation } from '../data/stations';
 
 interface HeaderProps {
   activeStation: RadioStation;
-  isPlaying: boolean;
-  isBuffering: boolean;
-  onTogglePlay: () => void;
 }
 
-export function Header({ activeStation, isPlaying, isBuffering, onTogglePlay }: HeaderProps) {
+export function Header({ activeStation }: HeaderProps) {
   const [logoFailed, setLogoFailed] = useState(false);
 
   return (
@@ -73,23 +70,19 @@ export function Header({ activeStation, isPlaying, isBuffering, onTogglePlay }: 
           </a>
         </nav>
 
-        {/* Zone 3: Single primary action */}
+        {/* Zone 3: Direct blank-tab radio CTA */}
         <div className="flex items-center shrink-0">
-          <button
-            type="button"
-            onClick={onTogglePlay}
-            aria-label={isPlaying ? `Pausar ${activeStation.shortName}` : `Escuchar ${activeStation.shortName} en vivo`}
-            className="min-h-[40px] sm:min-h-[44px] px-4 py-2 rounded-lg bg-[#1B4D3E] hover:bg-[#143B2F] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold inline-flex items-center gap-2 transition-all whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1B4D3E]"
+          <a
+            href={activeStation.directStreamUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Escuchar ${activeStation.shortName} en vivo en nueva pestaña`}
+            className="min-h-[40px] sm:min-h-[44px] px-4 py-2 rounded-lg bg-[#1B4D3E] hover:bg-[#143B2F] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold inline-flex items-center gap-2 transition-all whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1B4D3E]"
           >
-            {isBuffering ? (
-              <Loader2 className="w-4 h-4 animate-spin shrink-0" aria-hidden="true" />
-            ) : isPlaying ? (
-              <Pause className="w-4 h-4 shrink-0" aria-hidden="true" />
-            ) : (
-              <Play className="w-4 h-4 fill-current shrink-0" aria-hidden="true" />
-            )}
-            <span>{isPlaying ? `Pausar ${activeStation.shortName}` : 'Escuchar en Vivo'}</span>
-          </button>
+            <Play className="w-4 h-4 fill-current shrink-0" aria-hidden="true" />
+            <span>Escuchar {activeStation.shortName}</span>
+            <ExternalLink className="w-3.5 h-3.5 opacity-80 shrink-0 hidden sm:inline" aria-hidden="true" />
+          </a>
         </div>
       </div>
     </header>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Pause, Radio } from 'lucide-react';
+import { Play, ExternalLink, Radio } from 'lucide-react';
 import {
   STATIONS,
   getCurrentShowForStation,
@@ -9,16 +9,12 @@ import {
 
 interface StationsAndScheduleProps {
   activeStationId: StationId;
-  isPlaying: boolean;
-  onSelectStation: (stationId: StationId, autoPlay?: boolean) => void;
-  onTogglePlay: () => void;
+  onSelectStation: (stationId: StationId) => void;
 }
 
 export function StationsAndSchedule({
   activeStationId,
-  isPlaying,
   onSelectStation,
-  onTogglePlay,
 }: StationsAndScheduleProps) {
   const [scheduleTab, setScheduleTab] = useState<StationId>(activeStationId);
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
@@ -37,7 +33,7 @@ export function StationsAndSchedule({
               Cuatro frecuencias de Siguatepeque para ti
             </h2>
             <p className="text-sm sm:text-base text-[#4A5E52] leading-relaxed">
-              Desde noticias regionales hasta música del recuerdo, éxitos juveniles y baladas románticas. Elige tu señal favorita con un toque.
+              Desde noticias regionales hasta música del recuerdo, éxitos juveniles y baladas románticas. Toca cualquier emisora para escucharla al instante.
             </p>
           </div>
           <div className="text-xs font-medium text-[#52665A] shrink-0">
@@ -48,7 +44,6 @@ export function StationsAndSchedule({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {STATIONS.map((station) => {
             const isSelected = station.id === activeStationId;
-            const isThisPlaying = isSelected && isPlaying;
             const currentShow = getCurrentShowForStation(station, hondurasHour);
 
             return (
@@ -96,36 +91,24 @@ export function StationsAndSchedule({
                     </p>
                   </div>
 
-                  <button
-                    type="button"
+                  <a
+                    href={station.directStreamUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => {
-                      if (isSelected) {
-                        onTogglePlay();
-                      } else {
-                        onSelectStation(station.id, true);
-                        setScheduleTab(station.id);
-                      }
+                      onSelectStation(station.id);
+                      setScheduleTab(station.id);
                     }}
-                    className={`w-full min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold inline-flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-                      isThisPlaying
-                        ? 'bg-amber-500 hover:bg-amber-400 text-[#0F2B1D]'
-                        : isSelected
-                          ? 'bg-[#1B4D3E] hover:bg-[#143B2F] text-white'
-                          : 'bg-[#EDF2EE] hover:bg-[#DCE7DF] text-[#0F2B1D]'
+                    className={`w-full min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold inline-flex items-center justify-center gap-2 transition-colors ${
+                      isSelected
+                        ? 'bg-[#1B4D3E] hover:bg-[#143B2F] text-white'
+                        : 'bg-[#EDF2EE] hover:bg-[#DCE7DF] text-[#0F2B1D]'
                     }`}
                   >
-                    {isThisPlaying ? (
-                      <>
-                        <Pause className="w-4 h-4 fill-current shrink-0" aria-hidden="true" />
-                        <span>Pausar señal</span>
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-4 h-4 fill-current shrink-0" aria-hidden="true" />
-                        <span>Sintonizar</span>
-                      </>
-                    )}
-                  </button>
+                    <Play className="w-4 h-4 fill-current shrink-0" aria-hidden="true" />
+                    <span>Escuchar en Vivo</span>
+                    <ExternalLink className="w-3.5 h-3.5 opacity-75 shrink-0" aria-hidden="true" />
+                  </a>
                 </div>
               </article>
             );
@@ -217,14 +200,17 @@ export function StationsAndSchedule({
 
                   <div className="shrink-0">
                     {isLiveNow ? (
-                      <button
-                        type="button"
-                        onClick={() => onSelectStation(scheduleStation.id, true)}
-                        className="min-h-[36px] px-3 py-1.5 rounded-lg bg-[#1B4D3E] hover:bg-[#143B2F] text-white text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                      <a
+                        href={scheduleStation.directStreamUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => onSelectStation(scheduleStation.id)}
+                        className="min-h-[36px] px-3 py-1.5 rounded-lg bg-[#1B4D3E] hover:bg-[#143B2F] text-white text-xs font-semibold inline-flex items-center gap-1.5 whitespace-nowrap"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
                         <span>Al Aire · Escuchar</span>
-                      </button>
+                        <ExternalLink className="w-3 h-3 opacity-80" aria-hidden="true" />
+                      </a>
                     ) : (
                       <span className="text-xs font-medium text-[#64786C]">Programado</span>
                     )}

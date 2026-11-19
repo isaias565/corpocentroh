@@ -221,7 +221,7 @@ export function TvChannelsSection({ onTvStartPlaying }: TvChannelsSectionProps) 
             ) : (
               <span className="inline-flex items-center gap-1.5 text-[#C8DACD]">
                 <Volume2 className="w-3.5 h-3.5 text-amber-300" aria-hidden="true" />
-                <span>Al iniciar TV se pausa la radio automáticamente</span>
+                <span>Señal HLS en directo</span>
               </span>
             )}
           </div>
