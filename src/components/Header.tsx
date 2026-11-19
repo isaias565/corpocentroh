@@ -48,10 +48,10 @@ export function Header({ activeStation, isPlaying, isBuffering, onTogglePlay }: 
             En Vivo
           </a>
           <a
-            href="#chat-oyentes"
+            href="#tv-en-vivo"
             className="hover:text-[#0F2B1D] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
           >
-            Chat
+            Canales TV
           </a>
           <a
             href="#emisoras"
@@ -60,16 +60,16 @@ export function Header({ activeStation, isPlaying, isBuffering, onTogglePlay }: 
             Emisoras
           </a>
           <a
-            href="#tv-en-vivo"
-            className="hover:text-[#0F2B1D] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
-          >
-            Canales TV
-          </a>
-          <a
             href="#programacion"
             className="hover:text-[#0F2B1D] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
           >
             Programación
+          </a>
+          <a
+            href="#nosotros"
+            className="hover:text-[#0F2B1D] hover:underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
+          >
+            Publicidad
           </a>
         </nav>
 

@@ -5,7 +5,6 @@ import http from 'node:http';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { WebSocketServer, WebSocket } from 'ws';
 import { createServer as createViteServer } from 'vite';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,21 +32,6 @@ const STREAM_TARGETS: Record<string, { url: string; label: string }> = {
   },
 };
 
-type ChatMessageKind = 'chat' | 'saludo' | 'peticion';
-
-interface ChatMessage {
-  id: string;
-  author: string;
-  location: string;
-  stationId: string;
-  stationLabel: string;
-  kind: ChatMessageKind;
-  text: string;
-  createdAt: string;
-  hearts: number;
-  isCabin?: boolean;
-}
-
 interface ContactInquiry {
   id: string;
   name: string;
@@ -57,22 +41,6 @@ interface ContactInquiry {
   message: string;
   createdAt: string;
 }
-
-const MAX_CHAT_HISTORY = 80;
-const chatMessages: ChatMessage[] = [
-  {
-    id: 'cabin-welcome-1',
-    author: 'Cabina Central CORPOCENTROH',
-    location: 'Siguatepeque, Comayagua',
-    stationId: 'lacentro',
-    stationLabel: 'La Centro 96.3 FM',
-    kind: 'saludo',
-    text: '¡Bienvenidos a la nueva señal digital de CORPOCENTROH desde la Ciudad de los Pinares! Deja tu saludo o pide tu canción favorita en vivo.',
-    createdAt: new Date().toISOString(),
-    hearts: 1,
-    isCabin: true,
-  },
-];
 
 const contactInquiries: ContactInquiry[] = [];
 
@@ -177,9 +145,9 @@ async function startServer() {
       return;
     }
 
-    if (message.length < 8) {
+    if (message.length < 6) {
       res.status(400).json({
-        error: 'Cuéntanos brevemente tu consulta o pauta publicitaria (mínimo 8 caracteres).',
+        error: 'Cuéntanos brevemente tu consulta o pauta publicitaria.',
       });
       return;
     }
@@ -211,153 +179,6 @@ async function startServer() {
   });
 
   const server = http.createServer(app);
-
-  // Real-time WebSocket server for listener chat
-  const wss = new WebSocketServer({ server, path: '/ws' });
-  const lastMessageAt = new WeakMap<WebSocket, number>();
-  const aliveMap = new WeakMap<WebSocket, boolean>();
-
-  function broadcast(payload: unknown) {
-    const encoded = JSON.stringify(payload);
-    for (const client of wss.clients) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(encoded);
-      }
-    }
-  }
-
-  function broadcastPresence() {
-    broadcast({
-      type: 'presence:update',
-      onlineCount: wss.clients.size,
-    });
-  }
-
-  wss.on('connection', (ws) => {
-    aliveMap.set(ws, true);
-
-    ws.on('pong', () => {
-      aliveMap.set(ws, true);
-    });
-
-    ws.send(
-      JSON.stringify({
-        type: 'init',
-        messages: chatMessages,
-        onlineCount: wss.clients.size,
-      })
-    );
-
-    broadcastPresence();
-
-    ws.on('message', (rawBuffer) => {
-      let data: Record<string, unknown>;
-      try {
-        data = JSON.parse(rawBuffer.toString('utf8'));
-      } catch {
-        ws.send(JSON.stringify({ type: 'error', error: 'Formato de mensaje inválido' }));
-        return;
-      }
-
-      if (data.type === 'chat:send') {
-        const now = Date.now();
-        const prev = lastMessageAt.get(ws) || 0;
-        if (now - prev < 1200) {
-          ws.send(
-            JSON.stringify({
-              type: 'error',
-              error: 'Espera un momento antes de enviar otro mensaje.',
-            })
-          );
-          return;
-        }
-
-        const author = sanitizeText(data.author, 26);
-        const location = sanitizeText(data.location, 34) || 'Siguatepeque';
-        const stationId = sanitizeText(data.stationId, 24);
-        const targetStation = STREAM_TARGETS[stationId];
-        const kindRaw = sanitizeText(data.kind, 16);
-        const kind: ChatMessageKind =
-          kindRaw === 'saludo' || kindRaw === 'peticion' ? kindRaw : 'chat';
-        const text = sanitizeText(data.text, 280);
-
-        if (author.length < 2) {
-          ws.send(
-            JSON.stringify({
-              type: 'error',
-              error: 'Tu nombre debe tener al menos 2 caracteres.',
-            })
-          );
-          return;
-        }
-
-        if (text.length < 1) {
-          ws.send(
-            JSON.stringify({
-              type: 'error',
-              error: 'Escribe un mensaje antes de enviarlo.',
-            })
-          );
-          return;
-        }
-
-        lastMessageAt.set(ws, now);
-
-        const message: ChatMessage = {
-          id: crypto.randomUUID(),
-          author,
-          location,
-          stationId: targetStation ? stationId : 'lacentro',
-          stationLabel: targetStation ? targetStation.label : 'La Centro 96.3 FM',
-          kind,
-          text,
-          createdAt: new Date().toISOString(),
-          hearts: 0,
-        };
-
-        chatMessages.push(message);
-        if (chatMessages.length > MAX_CHAT_HISTORY) {
-          chatMessages.shift();
-        }
-
-        broadcast({
-          type: 'chat:message',
-          message,
-        });
-      } else if (data.type === 'chat:react') {
-        const messageId = sanitizeText(data.messageId, 64);
-        const msg = chatMessages.find((m) => m.id === messageId);
-        if (msg) {
-          msg.hearts += 1;
-          broadcast({
-            type: 'chat:reaction',
-            messageId: msg.id,
-            hearts: msg.hearts,
-          });
-        }
-      }
-    });
-
-    ws.on('close', () => {
-      broadcastPresence();
-    });
-  });
-
-  // Keep mobile WebSocket connections healthy and reap stale ones
-  const heartbeatInterval = setInterval(() => {
-    for (const client of wss.clients) {
-      if (aliveMap.get(client) === false) {
-        client.terminate();
-        continue;
-      }
-      aliveMap.set(client, false);
-      client.ping();
-    }
-  }, 30000);
-
-  wss.on('close', () => {
-    clearInterval(heartbeatInterval);
-  });
 
   if (!IS_PROD) {
     const vite = await createViteServer({

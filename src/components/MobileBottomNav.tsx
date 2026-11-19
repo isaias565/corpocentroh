@@ -1,4 +1,4 @@
-import { Radio, Tv, MessageSquare, CalendarClock } from 'lucide-react';
+import { Radio, Tv, LayoutGrid, CalendarClock } from 'lucide-react';
 
 export function MobileBottomNav() {
   return (
@@ -24,11 +24,11 @@ export function MobileBottomNav() {
         </a>
 
         <a
-          href="#chat-oyentes"
+          href="#emisoras"
           className="min-h-[44px] flex flex-col items-center justify-center gap-0.5 text-[#374B3F] active:bg-[#E4ECE6] rounded-lg transition-colors"
         >
-          <MessageSquare className="w-5 h-5" aria-hidden="true" />
-          <span className="text-[11px] font-medium leading-none">Chat</span>
+          <LayoutGrid className="w-5 h-5" aria-hidden="true" />
+          <span className="text-[11px] font-medium leading-none">Emisoras</span>
         </a>
 
         <a

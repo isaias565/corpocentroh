@@ -50,6 +50,7 @@ export interface TvChannel {
 }
 
 export const HERO_PINE_IMAGE = '/src/assets/images/siguatepeque_pine_sunrise_1795022912873.jpg';
+export const PUBLICIDAD_IMAGE = '/src/assets/images/publicidad_clinica_damaris.png';
 
 export const TV_CHANNELS: TvChannel[] = [
   {
@@ -85,7 +86,7 @@ export const STATIONS: RadioStation[] = [
       'La emisora pionera de Siguatepeque y voz emblemática del altiplano central. Información regional, transmisiones deportivas, rancheras y compañía diaria para toda la familia.',
     accentHex: '#1B4D3E',
     surfaceTint: '#EAF2EE',
-    coverImage: '/src/assets/images/station_lacentro_cover_1795022912870.jpg',
+    coverImage: '/src/assets/images/station_lacentro.png',
     streamProxyUrl: '/api/stream/lacentro',
     directStreamUrl: 'http://198.204.234.10:6175/live',
     whatsappCabin: CORPOCENTROH_WHATSAPP_DISPLAY,
@@ -147,7 +148,7 @@ export const STATIONS: RadioStation[] = [
       'Inspirada en los pinares de Siguatepeque, acompaña tus mañanas y viajes por la carretera CA-5 con música variada, cultura local y mensajes positivos.',
     accentHex: '#0F5C4D',
     surfaceTint: '#E8F3F0',
-    coverImage: '/src/assets/images/station_pinares_cover_1795022979825.jpg',
+    coverImage: '/src/assets/images/station_pinares.png',
     streamProxyUrl: '/api/stream/pinares',
     directStreamUrl: 'http://198.204.234.10:6184/live',
     whatsappCabin: CORPOCENTROH_WHATSAPP_DISPLAY,
@@ -200,7 +201,7 @@ export const STATIONS: RadioStation[] = [
       'La frecuencia con el pulso joven de Comayagua y Siguatepeque. Estrenos musicales, pop en español, ritmo urbano limpio y conexión directa con los oyentes.',
     accentHex: '#B45309',
     surfaceTint: '#FBF3E6',
-    coverImage: '/src/assets/images/station_sensa_cover_1795022913158.jpg',
+    coverImage: '/src/assets/images/station_sensa.png',
     streamProxyUrl: '/api/stream/sensa',
     directStreamUrl: 'http://198.204.234.10:6185/live',
     whatsappCabin: CORPOCENTROH_WHATSAPP_DISPLAY,
@@ -253,7 +254,7 @@ export const STATIONS: RadioStation[] = [
       'Tu refugio musical para dedicar canciones, disfrutar clásicos románticos, boleros eternos y ritmos gruperos con el calor humano de nuestra gente.',
     accentHex: '#881337',
     surfaceTint: '#F9ECEF',
-    coverImage: '/src/assets/images/station_sentimientos_cover_1795022914790.jpg',
+    coverImage: '/src/assets/images/station_sentimientos.png',
     streamProxyUrl: '/api/stream/sentimientos',
     directStreamUrl: 'http://198.204.234.10:6186/live',
     whatsappCabin: CORPOCENTROH_WHATSAPP_DISPLAY,

@@ -169,19 +169,19 @@ export function LivePlayerDeck({
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 min-w-0">
             {/* Cover Art with CSS Fallback */}
             <div className="flex items-center gap-4 min-w-0 flex-1">
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-[#1B4D3E] flex items-center justify-center border border-white/15">
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-white/95 p-1 flex items-center justify-center border border-white/20">
                 {!coverImgFailed[activeStation.id] ? (
                   <img
                     src={activeStation.coverImage}
-                    alt={`Cabina de ${activeStation.name}`}
+                    alt={`Logo de ${activeStation.name}`}
                     referrerPolicy="no-referrer"
                     onError={() =>
                       setCoverImgFailed((prev) => ({ ...prev, [activeStation.id]: true }))
                     }
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 ) : (
-                  <Radio className="w-7 h-7 text-amber-300" aria-hidden="true" />
+                  <Radio className="w-7 h-7 text-[#1B4D3E]" aria-hidden="true" />
                 )}
               </div>
 

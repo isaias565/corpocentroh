@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { STATIONS, getCurrentShowForStation, type StationId } from './data/stations';
 import { Header } from './components/Header';
 import { LivePlayerDeck } from './components/LivePlayerDeck';
-import { ListenerChat } from './components/ListenerChat';
+import { AdSpotlightCard } from './components/AdSpotlightCard';
 import { StationsAndSchedule } from './components/StationsAndSchedule';
 import { TvChannelsSection } from './components/TvChannelsSection';
 import { SiguatepequeHeritage } from './components/SiguatepequeHeritage';
@@ -76,7 +76,7 @@ export default function App() {
       title: `${activeStation.name} (${activeStation.frequency})`,
       artist: currentShow.title,
       album: 'CORPOCENTROH · Siguatepeque, Honduras',
-      artwork: [{ src: absoluteArt, sizes: '512x512', type: 'image/jpeg' }],
+      artwork: [{ src: absoluteArt, sizes: '512x512', type: 'image/png' }],
     });
 
     navigator.mediaSession.setActionHandler('play', () => {
@@ -173,12 +173,12 @@ export default function App() {
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-14 sm:space-y-16">
-        {/* Dominant Hero Studio: Live Player + Real-Time Listener Chat */}
+        {/* Dominant Hero Studio: Live Radio Player + Featured Advertising */}
         <div
           id="en-vivo"
           className="scroll-mt-20 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-stretch"
         >
-          <div className="lg:col-span-7 min-w-0 flex flex-col">
+          <div className="lg:col-span-8 min-w-0 flex flex-col">
             <LivePlayerDeck
               activeStation={activeStation}
               isPlaying={isPlaying}
@@ -199,8 +199,8 @@ export default function App() {
             />
           </div>
 
-          <div className="lg:col-span-5 min-w-0 flex flex-col">
-            <ListenerChat activeStation={activeStation} />
+          <div className="lg:col-span-4 min-w-0 flex flex-col">
+            <AdSpotlightCard />
           </div>
         </div>
 

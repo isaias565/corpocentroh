@@ -58,40 +58,36 @@ export function StationsAndSchedule({
                   isSelected ? 'border-[#1B4D3E]' : 'border-[#DCE4DD] hover:border-[#B6C7B9]'
                 }`}
               >
-                {/* Cover Photo */}
-                <div className="relative aspect-[4/3] w-full bg-[#1B4D3E] overflow-hidden">
+                {/* Official Station Logo */}
+                <div className="relative aspect-square w-full bg-[#F5F7F5] p-5 border-b border-[#E7EDE8] flex items-center justify-center overflow-hidden">
                   {!failedImages[station.id] ? (
                     <img
                       src={station.coverImage}
-                      alt={`Estudio de ${station.name}`}
+                      alt={`Logo de ${station.name}`}
                       referrerPolicy="no-referrer"
                       onError={() =>
                         setFailedImages((prev) => ({ ...prev, [station.id]: true }))
                       }
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[#143B2F] text-amber-300">
+                    <div className="w-full h-full rounded-xl flex items-center justify-center bg-[#143B2F] text-amber-300">
                       <Radio className="w-10 h-10" aria-hidden="true" />
                     </div>
                   )}
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"
-                  />
-                  <div className="absolute bottom-3 left-3.5 right-3.5 text-white min-w-0">
-                    <div className="font-mono text-xs tabular-nums text-amber-300 font-medium">
-                      {station.frequency}
-                    </div>
-                    <h3 className="font-display text-lg font-bold leading-tight truncate">
-                      {station.name}
-                    </h3>
-                  </div>
                 </div>
 
                 {/* Body */}
                 <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between gap-4 min-w-0">
                   <div className="space-y-2 min-w-0">
+                    <div>
+                      <div className="font-mono text-xs tabular-nums text-[#1B4D3E] font-semibold">
+                        {station.frequency}
+                      </div>
+                      <h3 className="font-display text-lg font-bold text-[#0F2B1D] leading-tight truncate mt-0.5">
+                        {station.name}
+                      </h3>
+                    </div>
                     <p className="text-xs font-medium text-[#374B3F]">
                       Al aire: <span className="text-[#0F2B1D] font-semibold">{currentShow.title}</span>
                     </p>
